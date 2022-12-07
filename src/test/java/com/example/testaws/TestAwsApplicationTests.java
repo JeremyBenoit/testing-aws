@@ -14,6 +14,6 @@ class TestAwsApplicationTests {
 
   @Test
   public void assetHelloWorld() {
-    assertEquals("hello","hello");
+    assertEquals("hello","hel");
   }
 }
