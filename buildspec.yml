@@ -1,15 +1,19 @@
-version: 0.1
+version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      java: corretto17
+  pre_build:
     commands:
-      - echo installing maven...
-      - yum install -y maven
+      - echo Nothing to do in the pre_build phase...
   build:
     commands:
+      - echo Build started on `date`
+      - mvn install
+  post_build:
+    commands:
       - echo Build completed on `date`
-      - mvn clean test package
-
 artifacts:
   files:
-    - '**/*'
+    - target/SpringBootSwagger-0.0.1-SNAPSHOT.jar
