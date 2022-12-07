@@ -1,30 +1,28 @@
 version: 0.0
 os: linux
-
+# We need to copy our war file over to the tomcat applications directory, which is /usr/share/tomcat/webapps
 files:
-  - source: /
-    destination: /home/ec2-user/server
+  - source: /target/hello-world-maven.war
+    destination: /usr/share/tomcat/webapps
+    overwrite: true
+
 
 permissions:
   - object: /
     pattern: "**"
-    owner: ec2-user
-    group: ec2-user
-
+    mode: 755
+    owner: tomcat
+    group: tomcat
 hooks:
-  BeforeInstall:
-    - location: server_clear.sh
-      timeout: 300
-      runas: ec2-user
-  AfterInstall:
-    - location: fix_privileges.sh
-      timeout: 300
-      runas: ec2-user
-  ApplicationStart:
-    - location: server_start.sh
-      timeout: 20
-      runas: ec2-user
+  # Before the application is deployed, Tomcat needs to be stopped and
+  # the existing applications cleaned up
   ApplicationStop:
-    - location: server_stop.sh
-      timeout: 20
-      runas: ec2-user
+    - location: scripts/server_stop_clean.sh
+      timeout: 60
+      runas: root
+
+  # Now we can start up Tomcat once again
+  ApplicationStart:
+    - location: scripts/server_start.sh
+      timeout: 60
+      runas: root
